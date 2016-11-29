@@ -27,9 +27,12 @@ default_UI <- function(){
         
         mainPanel(
             htmlOutput("item_stem_html"),
-            uiOutput("Main")    
+            uiOutput("Main"),
+            # textOutput("Debug"),
+            plotOutput("Progress")
         )
-        
+      
+
     ) #end bootstrapPage
     
 }

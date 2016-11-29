@@ -4,6 +4,26 @@ server <- function(input, output) {
         dynamicUi()
     })
     
+    output$Progress <- renderPlot({
+        cat(input$Next)
+        if (input$Next > 2){
+            res <- mirtCAT_post_internal(person=.MCE$person, design=.MCE$design)
+            plotdata <- data.frame(res$thetas_history,
+                                   res$thetas_history - res$thetas_SE_history,
+                                   res$thetas_history + res$thetas_SE_history)
+            colnames(plotdata) <- c('theta', 'lb', 'ub')
+            plotdata$administered <- 1:nrow(plotdata)
+            plotdata$label <- paste0( round(plotdata$theta,2), "\n(", round(res$thetas_SE_history,2), ")")
+            ggplot(plotdata, aes(administered, theta)) + 
+                geom_line() + 
+                geom_point() +
+                geom_text(aes(label=label)) +
+                geom_ribbon(aes(ymin = lb, ymax = ub), fill = 'steelblue', alpha = .3) +
+                coord_cartesian(ylim = c(-3,3))
+        }
+    })
+    
+    
     dynamicUi <- reactive({
         
         click <- input$Next
